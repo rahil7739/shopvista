@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import useProducts from "../../shared/products/useProducts";
 import "../styles/storefront.css";
@@ -45,6 +46,12 @@ const Storefront = () => {
   const publishedProducts = products
     .filter((product) => product.published)
     .sort((left, right) => Number(right.featured) - Number(left.featured));
+  const categories = [...new Set(publishedProducts.map((product) => product.category).filter(Boolean))]
+    .sort((left, right) => left.localeCompare(right));
+  const [activeCategory, setActiveCategory] = useState("All");
+  const visibleProducts = activeCategory === "All"
+    ? publishedProducts
+    : publishedProducts.filter((product) => product.category === activeCategory);
 
   return (
   <main className="marketing-site">
@@ -53,28 +60,28 @@ const Storefront = () => {
         <img src="/logo.png" alt="Shopvista" />
       </a>
       <nav className="marketing-nav" aria-label="Main navigation">
-        <a href="#benefits">Why Shopvista</a>
-        <a href="#collection">Collection</a>
-        <a href="#stories">Stories</a>
+        <a href="#benefits">Features</a>
+        <a href="#collection">Explore shops</a>
+        <a href="#stories">Our story</a>
       </nav>
       <div className="marketing-header-actions">
         <Link className="marketing-login" to="/login">Sign in</Link>
-        <Link className="marketing-button small" to="/admin/dashboard">Open dashboard <FaArrowRight /></Link>
+        <Link className="marketing-button small" to="/register">Start your store <FaArrowRight /></Link>
       </div>
     </header>
 
     <section className="marketing-hero">
       <div className="marketing-hero-copy">
-        <span className="marketing-kicker"><span /> THE NEW WAY TO SELL ONLINE</span>
-        <h1>Good things<br />are <em>worth</em> finding.</h1>
-        <p>Thoughtful products for everyday life, from independent makers and small brands we love.</p>
+        <span className="marketing-kicker"><span /> YOUR SHOP, READY FOR WHAT&apos;S NEXT</span>
+        <h1>Your next big thing starts <em>here.</em></h1>
+        <p>Bring your products, orders, and ideas together in one thoughtful place. Shopvista gives independent businesses room to grow.</p>
         <div className="marketing-hero-actions">
-          <a className="marketing-button" href="#collection">Explore the collection <FaArrowRight /></a>
-          <a className="marketing-text-link" href="#benefits">Discover our story</a>
+          <Link className="marketing-button" to="/register">Build your storefront <FaArrowRight /></Link>
+          <a className="marketing-text-link" href="#benefits">See what you can do</a>
         </div>
         <div className="marketing-proof">
-          <div className="proof-avatars" aria-hidden="true"><span>J</span><span>A</span><span>M</span><span>+</span></div>
-          <p><strong>Loved by 2,000+</strong><br />curious, conscious customers</p>
+          <span className="marketing-proof-check"><FaCheck /></span>
+          <p><strong>Made for independent businesses</strong><br />Simple tools. More room to grow.</p>
         </div>
       </div>
 
@@ -96,12 +103,34 @@ const Storefront = () => {
 
     <section className="marketing-collection" id="collection">
       <div className="marketing-section-heading">
-        <div><p className="marketing-overline">A FEW OF OUR FAVORITES</p><h2>Everyday, <em>elevated.</em></h2></div>
-        <a href="#benefits" className="marketing-text-link">Meet the collection <FaArrowRight /></a>
+        <div><p className="marketing-overline">A LOOK INSIDE THE SHOP</p><h2>A storefront worth <em>stepping into.</em></h2></div>
+        <a href="#benefits" className="marketing-text-link">Explore the features <FaArrowRight /></a>
       </div>
-      <div className="product-grid">
+      {categories.length > 0 && (
+        <div className="collection-toolbar">
+          <div className="collection-filters" role="group" aria-label="Filter products by category">
+            {["All", ...categories].map((category) => (
+              <button
+                className={`collection-filter${activeCategory === category ? " is-active" : ""}`}
+                key={category}
+                type="button"
+                aria-pressed={activeCategory === category}
+                onClick={() => setActiveCategory(category)}
+              >
+                {category === "All" ? "All finds" : category}
+              </button>
+            ))}
+          </div>
+          {!loading && (
+            <p className="collection-count" aria-live="polite">
+              {visibleProducts.length} {visibleProducts.length === 1 ? "piece" : "pieces"}
+            </p>
+          )}
+        </div>
+      )}
+      <div className="product-grid" id="collection-products">
         {loading && <p className="storefront-product-message">Finding the good things...</p>}
-        {publishedProducts.map((product, index) => (
+        {visibleProducts.map((product, index) => (
           <article className="product-card" key={product.id}>
             <div className={`product-art product-art-${product.artStyle || "ceramic"}`}>
               <span className="product-number">{String(index + 1).padStart(2, "0")}</span>
@@ -121,15 +150,15 @@ const Storefront = () => {
         ? <p className="storefront-product-error" role="alert">We couldn&apos;t load the collection right now. Please try again soon.</p>
         : !loading && publishedProducts.length === 0
         ? <div className="collection-empty"><FaBoxOpen /><p>Our next good find is on its way.</p></div>
-        : !loading && <div className="collection-note"><FaBoxOpen /><span>New things, chosen carefully. <strong>More good finds arriving soon.</strong></span></div>}
+        : !loading && <div className="collection-note"><FaBoxOpen /><span>A sample storefront, powered by Shopvista. <strong>Make it your own.</strong></span></div>}
     </section>
 
     <section className="marketing-benefits" id="benefits">
       <div className="benefits-intro">
-        <p className="marketing-overline">A LITTLE MORE THOUGHTFUL</p>
-        <h2>Better shopping<br />starts <em>with the details.</em></h2>
-        <p>We believe the best online shopping feels easy, personal, and just a little bit special. That’s what we’re here for.</p>
-        <Link className="marketing-text-link" to="/admin/dashboard">A peek behind the shop <FaArrowRight /></Link>
+        <p className="marketing-overline">EVERYTHING IN ITS RIGHT PLACE</p>
+        <h2>More time for<br /><em>the good stuff.</em></h2>
+        <p>Running a shop takes enough energy. Keep the everyday details organized, so you can focus on the products and people you care about.</p>
+        <Link className="marketing-text-link" to="/register">Take the first step <FaArrowRight /></Link>
       </div>
       <div className="benefit-grid">
         {benefits.map((benefit, index) => {
@@ -162,15 +191,15 @@ const Storefront = () => {
     </section>
 
     <section className="marketing-cta">
-      <div><p className="marketing-overline">YOUR NEXT FAVORITE IS OUT THERE</p><h2>Make room for <em>good things.</em></h2><p>Browse the collection and find something you’ll love having around.</p></div>
-      <a className="marketing-button light" href="#collection">Find your something <FaArrowRight /></a>
+      <div><p className="marketing-overline">YOUR NEXT CHAPTER STARTS HERE</p><h2>Ready to open <em>your shop?</em></h2><p>Bring your idea to life with a storefront that feels like yours.</p></div>
+      <Link className="marketing-button light" to="/register">Create your account <FaArrowRight /></Link>
       <span className="cta-decoration">✳</span>
     </section>
 
     <footer className="marketing-footer">
       <a className="marketing-brand footer-brand" href="/" aria-label="Shopvista home"><img src="/logo.png" alt="Shopvista" /></a>
-      <p>Good things, thoughtfully found.</p>
-      <div><a href="#benefits">Our story</a><a href="#collection">The collection</a><Link to="/admin/dashboard">Store dashboard</Link></div>
+      <p>A thoughtful home for independent shops.</p>
+      <div><a href="#benefits">Features</a><a href="#collection">Explore shops</a><Link to="/login">Sign in</Link></div>
       <small>© 2026 Shopvista. Made with care.</small>
     </footer>
   </main>

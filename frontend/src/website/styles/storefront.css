@@ -5,7 +5,8 @@
   --marketing-muted: #727d8b;
   --marketing-blue: #1456d9;
   --marketing-cream: #f7f5ef;
-  overflow: hidden;
+  overflow: clip;
+  scroll-behavior: smooth;
   color: var(--marketing-ink);
   background: #fff;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -16,7 +17,8 @@
 }
 
 .marketing-header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 2;
   display: flex;
   height: 82px;
@@ -25,7 +27,8 @@
   gap: 30px;
   padding: 0 clamp(24px, 7vw, 108px);
   border-bottom: 1px solid #f0f1f3;
-  background: #fff;
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(14px);
 }
 
 .marketing-brand {
@@ -104,7 +107,7 @@
   align-items: center;
   gap: 4vw;
   padding: 55px clamp(35px, 10.2vw, 156px) 67px;
-  background: #fff;
+  background: linear-gradient(115deg, #fff 20%, #faf9f5 100%);
 }
 
 .marketing-hero-copy {
@@ -138,7 +141,7 @@
   margin: 0;
   color: var(--marketing-ink);
   font-family: Georgia, "Times New Roman", serif;
-  font-size: clamp(52px, 6vw, 82px);
+  font-size: clamp(52px, 5.7vw, 76px);
   font-weight: 400;
   letter-spacing: -3.4px;
   line-height: 0.98;
@@ -187,6 +190,18 @@
   margin-top: 42px;
 }
 
+.marketing-proof-check {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  place-items: center;
+  border-radius: 50%;
+  color: #3c7656;
+  background: #e8f0e9;
+  font-size: 11px;
+}
+
 .proof-avatars {
   display: flex;
   padding-left: 4px;
@@ -226,7 +241,9 @@
   width: 100%;
   min-height: 440px;
   overflow: hidden;
+  border-radius: 4px;
   background: #eae5d9;
+  box-shadow: 0 24px 60px rgba(34, 43, 42, 0.1);
 }
 
 .hero-art-glow {
@@ -417,6 +434,7 @@
 
 .marketing-collection {
   padding: 93px clamp(28px, 10.2vw, 156px) 86px;
+  background: #fff;
 }
 
 .marketing-section-heading {
@@ -443,10 +461,70 @@
   line-height: 1.1;
 }
 
+.collection-toolbar {
+  display: flex;
+  min-height: 48px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: -5px 0 21px;
+}
+
+.collection-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.collection-filter {
+  min-height: 35px;
+  padding: 0 14px;
+  border: 1px solid #e7e9ed;
+  border-radius: 999px;
+  color: #687485;
+  background: #fff;
+  cursor: pointer;
+  font-size: 10px;
+  font-weight: 600;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.collection-filter:hover,
+.collection-filter.is-active {
+  border-color: var(--marketing-ink);
+  color: #fff;
+  background: var(--marketing-ink);
+}
+
+.collection-filter:focus-visible {
+  outline: 3px solid rgba(37, 99, 235, 0.35);
+  outline-offset: 3px;
+}
+
+.collection-count {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #818b98;
+  font-size: 10px;
+}
+
 .product-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 19px;
+}
+
+.product-card {
+  min-width: 0;
+  padding-bottom: 15px;
+  border: 1px solid #f0efeb;
+  background: #fff;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 34px rgba(23, 38, 61, 0.09);
 }
 
 .product-art {
@@ -583,7 +661,7 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 12px;
-  padding: 15px 2px 0;
+  padding: 15px 15px 0;
 }
 
 .product-details p {
@@ -637,7 +715,7 @@
   grid-template-columns: 0.85fr 1.15fr;
   gap: 8vw;
   padding: 91px clamp(28px, 10.2vw, 156px);
-  background: #f7f7f4;
+  background: #f6f7f3;
 }
 
 .benefits-intro h2 {
@@ -668,6 +746,13 @@
   padding: 19px;
   border: 1px solid #ebece8;
   background: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.benefit-card:hover {
+  transform: translateY(-3px);
+  border-color: #dce3db;
+  box-shadow: 0 12px 28px rgba(34, 53, 38, 0.07);
 }
 
 .benefit-index {
@@ -836,7 +921,7 @@
   overflow: hidden;
   padding: 48px clamp(35px, 10.2vw, 156px);
   color: #fff;
-  background: #173a72;
+  background: linear-gradient(115deg, #173a72, #1d4b8d);
 }
 
 .marketing-cta .marketing-overline {
@@ -938,6 +1023,10 @@
     min-height: 390px;
   }
 
+  .product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .marketing-benefits {
     gap: 35px;
   }
@@ -951,9 +1040,11 @@
 
 @media (max-width: 720px) {
   .marketing-header {
-    height: 69px;
-    gap: 12px;
-    padding: 0 18px;
+    height: auto;
+    min-height: 69px;
+    flex-wrap: wrap;
+    gap: 0 12px;
+    padding: 7px 18px 0;
   }
 
   .marketing-brand {
@@ -962,10 +1053,25 @@
   }
 
   .marketing-nav {
+    order: 3;
+    width: 100%;
+    gap: 23px;
+    overflow-x: auto;
+    padding: 0 0 11px;
+    scrollbar-width: none;
+  }
+
+  .marketing-nav::-webkit-scrollbar {
     display: none;
   }
 
+  .marketing-nav a {
+    flex: 0 0 auto;
+    font-size: 10px;
+  }
+
   .marketing-header-actions {
+    margin-left: auto;
     gap: 13px;
   }
 
@@ -1011,6 +1117,19 @@
 
   .marketing-collection {
     padding: 66px 24px;
+  }
+
+  .collection-toolbar {
+    align-items: flex-start;
+  }
+
+  .collection-filters {
+    gap: 7px;
+  }
+
+  .collection-filter {
+    min-height: 33px;
+    padding: 0 11px;
   }
 
   .marketing-section-heading {
